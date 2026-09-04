@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jadwal Loading Event GA</title>
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #eff6ff;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    p.subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .filter-container {
+      background: var(--card-bg);
+      padding: 14px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .filter-container label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background-color: #fff;
+      color: var(--text);
+      outline: none;
+    }
+
+    .event-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .event-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+    }
+
+    .event-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .event-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .event-date-badge {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 480px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .info-value {
+      font-weight: 600;
+    }
+
+    .loading-box {
+      background: #f1f5f9;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 12px;
+      font-size: 0.85rem;
+    }
+
+    .loading-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .no-data, .loading-status {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Kalender & Jadwal Loading Event GA</h1>
+    <p class="subtitle">Sistem Informasi & Jadwal Operasional</p>
+  </header>
+
+  <div class="filter-container">
+    <label for="dateFilter">Filter Berdasarkan Tanggal Event:</label>
+    <select id="dateFilter" onchange="filterEvents()">
+      <option value="all">-- Tampilkan Semua Event --</option>
+    </select>
+  </div>
+
+  <div id="statusMessage" class="loading-status">Mengambil data terbaru dari Google Sheets...</div>
+  <div class="event-list" id="eventList"></div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbyb3UPksPpFon3SjcyIGJCOZTL7gxzxHsswVx7TTA41jc6vSBn7nnarDx2-i6NXIIrOpg/exec";
+    let allEvents = [];
+
+    function formatDate(val) {
+      if (!val || val === '-') return '-';
+      if (typeof val === 'string' && val.includes('T')) {
+        const d = new Date(val);
+        if (!isNaN(d.getTime())) {
+          return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+      }
+      return val;
+    }
+
+    function formatTime(val) {
+      if (!val || val === '-') return '';
+      if (typeof val === 'string' && val.includes('T')) {
+        const d = new Date(val);
+        if (!isNaN(d.getTime())) {
+          const hours = String(d.getHours()).padStart(2, '0');
+          const minutes = String(d.getMinutes()).padStart(2, '0');
+          return `(${hours}:${minutes})`;
+        }
+      }
+      return val ? `(${val})` : '';
+    }
+
+    async function loadData() {
+      const statusEl = document.getElementById('statusMessage');
+      try {
+        const response = await fetch(API_URL);
+        allEvents = await response.json();
+        
+        statusEl.style.display = 'none';
+        populateDropdown(allEvents);
+        renderCards(allEvents);
+      } catch (error) {
+        statusEl.textContent = 'Gagal memuat data. Pastikan jaringan stabil.';
+      }
+    }
+
+    function populateDropdown(events) {
+      const select = document.getElementById('dateFilter');
+      const dates = [...new Set(events.map(e => e.tanggalEvent).filter(Boolean))];
+      
+      dates.forEach(date => {
+        const opt = document.createElement('option');
+        opt.value = date;
+        opt.textContent = date;
+        select.appendChild(opt);
+      });
+    }
+
+    function renderCards(events) {
+      const listEl = document.getElementById('eventList');
+      listEl.innerHTML = '';
+
+      if (events.length === 0) {
+        listEl.innerHTML = '<div class="no-data">Tidak ada jadwal event.</div>';
+        return;
+      }
+
+      events.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'event-card';
+
+        const loadingInFormatted = formatDate(item.loadingIn);
+        const loadingInTime = formatTime(item.jamLoadingIn);
+        
+        const loadingOutFormatted = formatDate(item.loadingOut);
+        const loadingOutTime = formatTime(item.jamLoadingOut);
+
+        card.innerHTML = `
+          <div class="event-header">
+            <div class="event-title">${item.namaEvent}</div>
+            <span class="event-date-badge">📅 ${item.tanggalEvent}</span>
+          </div>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">PIC</span>
+              <span class="info-value">${item.pic}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Lokasi</span>
+              <span class="info-value">${item.lokasi}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Jam Event</span>
+              <span class="info-value">${item.jamEvent}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Kendaraan</span>
+              <span class="info-value">${item.kendaraan}</span>
+            </div>
+          </div>
+          <div class="loading-box">
+            <div class="loading-title">Jadwal Loading</div>
+            <p><strong>Loading In:</strong> ${loadingInFormatted} ${loadingInTime}</p>
+            <p><strong>Loading Out:</strong> ${loadingOutFormatted} ${loadingOutTime}</p>
+          </div>
+        `;
+        listEl.appendChild(card);
+      });
+    }
+
+    function filterEvents() {
+      const selectedValue = document.getElementById('dateFilter').value;
+      if (selectedValue === 'all') {
+        renderCards(allEvents);
+      } else {
+        const filtered = allEvents.filter(e => e.tanggalEvent === selectedValue);
+        renderCards(filtered);
+      }
+    }
+
+    loadData();
+  </script>
+
+</body>
+</html>
