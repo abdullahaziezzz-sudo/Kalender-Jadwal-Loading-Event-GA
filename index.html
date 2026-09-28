@@ -1,20 +1,23 @@
-<!-- Header Bertema Formal untuk Driver -->
-  <header>
-    <div class="header-top">
-      <div class="mascot-title-box">
-        <!-- Gambar Karakter / Logo -->
-        <img class="naruto-img" src="https://pngimg.com/d/naruto_PNG6.png" alt="Mascot" onerror="this.src='https://upload.wikimedia.org/wikipedia/en/9/9a/Naruto_Uzumaki.png'">
-        <div>
-          <h1>Jadwal Loading & Operasional Driver GA</h1>
-          <p class="subtitle">Informasi Waktu Loading In, Loading Out, dan Pelaksanaan Event</p>
-        </div>
-      </div>
-      <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">🌙 Mode Gelap</button>
-    </div>
-  </header>
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jadwal Loading & Operasional Driver GA</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --primary-light: #f1f5f9;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --loading-bg: #f8fafc;
+      --input-bg: #ffffff;
     }
 
-    /* Mode Gelap (Pure Black & Dark Theme) */
+    /* Mode Gelap (Dark Mode) */
     [data-theme="dark"] {
       --primary: #ffffff;
       --primary-light: #1e293b;
@@ -43,7 +46,7 @@
       margin: 0 auto;
     }
 
-    /* Header & Character Banner */
+    /* Header Container */
     header {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -51,8 +54,6 @@
       padding: 16px 20px;
       margin-bottom: 20px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-      position: relative;
-      overflow: hidden;
     }
 
     .header-top {
@@ -60,34 +61,32 @@
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      position: relative;
-      z-index: 2;
     }
 
     .mascot-title-box {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
     }
 
-    /* Gambar Karakter Naruto PNG */
+    /* Pengaturan Ukuran Gambar Logo Agar Rapi & Tidak Kebesaran */
     .naruto-img {
-      height: 85px;
+      height: 45px;
       width: auto;
+      max-width: 120px;
       object-fit: contain;
-      filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.15));
     }
 
     h1 {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       color: var(--text);
       font-weight: 800;
     }
 
     p.subtitle {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--text-muted);
-      margin-top: 2px;
+      margin-top: 3px;
     }
 
     /* Tombol Theme */
@@ -269,9 +268,6 @@
         flex-direction: column;
         align-items: flex-start;
       }
-      .naruto-img {
-        height: 65px;
-      }
       .info-grid {
         grid-template-columns: 1fr;
       }
@@ -322,15 +318,14 @@
 </head>
 <body>
 
-  <!-- Header dengan Karakter Naruto -->
+  <!-- Header Formal Operasional Driver -->
   <header>
     <div class="header-top">
       <div class="mascot-title-box">
-        <!-- Gambar Karakter Naruto PNG -->
-        <img class="naruto-img" src="https://pngimg.com/d/naruto_PNG6.png" alt="Naruto Character" onerror="this.src='https://upload.wikimedia.org/wikipedia/en/9/9a/Naruto_Uzumaki.png'">
+        <img class="naruto-img" src="https://upload.wikimedia.org/wikipedia/commons/c/c9/Naruto_logo.svg" alt="Logo">
         <div>
-          <h1>Kalender & Jadwal Loading Event GA</h1>
-          <p class="subtitle">Sistem Informasi & Jadwal Operasional GA</p>
+          <h1>Jadwal Loading & Operasional Driver GA</h1>
+          <p class="subtitle">Informasi Waktu Loading In, Loading Out, dan Pelaksanaan Event</p>
         </div>
       </div>
       <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">🌙 Mode Gelap</button>
@@ -339,7 +334,6 @@
 
   <!-- Section Filter & Search -->
   <div class="filter-container">
-    <!-- Search Bar -->
     <div class="search-box">
       <span class="search-icon">🔍</span>
       <input type="text" id="searchInput" onkeyup="filterEvents()" placeholder="Cari nama event, lokasi, atau PIC...">
@@ -403,7 +397,6 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbyb3UPksPpFon3SjcyIGJCOZTL7gxzxHsswVx7TTA41jc6vSBn7nnarDx2-i6NXIIrOpg/exec";
     let allEvents = [];
 
-    /* System Theme Toggle (Light / Dark) */
     function initTheme() {
       const savedTheme = localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
@@ -520,9 +513,9 @@
             </div>
           </div>
           <div class="loading-box">
-            <div class="loading-title">Jadwal Loading</div>
-            <p><strong>Loading In:</strong> ${loadingInFormatted} ${loadingInTime}</p>
-            <p><strong>Loading Out:</strong> ${loadingOutFormatted} ${loadingOutTime}</p>
+            <div class="loading-title">Jadwal Loading (Bongkar Muat)</div>
+            <p><strong>Loading In (Masuk):</strong> ${loadingInFormatted} ${loadingInTime}</p>
+            <p><strong>Loading Out (Keluar):</strong> ${loadingOutFormatted} ${loadingOutTime}</p>
           </div>
         `;
         listEl.appendChild(card);
