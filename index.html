@@ -3,35 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jadwal Loading Event GA - Ninja Edition</title>
+  <title>Jadwal Loading Event GA</title>
   <style>
     :root {
-      --primary: #ea580c; /* Oranye Naruto */
-      --primary-hover: #c2410c;
-      --chakra: #0284c7; /* Biru Chakra Rasengan */
-      --primary-light: #ffedd5;
-      --bg: #fff7ed;
+      --primary: #0f172a;
+      --primary-light: #f1f5f9;
+      --bg: #f8fafc;
       --card-bg: #ffffff;
-      --text: #1c1917;
-      --text-muted: #78716c;
-      --border: #fed7aa;
-      --loading-bg: #ffedd5;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --loading-bg: #f8fafc;
       --input-bg: #ffffff;
     }
 
-    /* Mode Gelap (Dark Mode / Akatsuki Theme) */
+    /* Mode Gelap (Pure Black & Dark Theme) */
     [data-theme="dark"] {
-      --primary: #f97316;
-      --primary-hover: #fb923c;
-      --chakra: #38bdf8;
-      --primary-light: #292524;
-      --bg: #0c0a09;
-      --card-bg: #1c1917;
-      --text: #f5f5f4;
-      --text-muted: #a8a29e;
-      --border: #44403c;
-      --loading-bg: #292524;
-      --input-bg: #1c1917;
+      --primary: #ffffff;
+      --primary-light: #1e293b;
+      --bg: #09090b;
+      --card-bg: #18181b;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --border: #27272a;
+      --loading-bg: #09090b;
+      --input-bg: #18181b;
     }
 
     * {
@@ -39,7 +35,7 @@
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
 
     body {
@@ -50,17 +46,16 @@
       margin: 0 auto;
     }
 
-    /* Header & Naruto Mascot Banner */
+    /* Header & Character Banner */
     header {
       background: var(--card-bg);
-      border: 2px solid var(--primary);
+      border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 16px;
+      padding: 16px 20px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      position: relative;
+      overflow: hidden;
     }
 
     .header-top {
@@ -68,48 +63,42 @@
       justify-content: space-between;
       align-items: center;
       gap: 12px;
+      position: relative;
+      z-index: 2;
     }
 
     .mascot-title-box {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
     }
 
-    .naruto-avatar {
-      width: 55px;
-      height: 55px;
-      border-radius: 50%;
-      border: 2px solid var(--primary);
-      object-fit: cover;
-      background: var(--primary-light);
-      box-shadow: 0 0 10px rgba(2, 132, 199, 0.3);
+    /* Gambar Karakter Naruto PNG */
+    .naruto-img {
+      height: 85px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.15));
     }
 
     h1 {
-      font-size: 1.25rem;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      font-size: 1.3rem;
+      color: var(--text);
+      font-weight: 800;
     }
 
     p.subtitle {
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
+      margin-top: 2px;
     }
 
-    /* Header Actions Buttons */
-    .header-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn-action {
+    /* Tombol Theme */
+    .theme-btn {
       background: var(--card-bg);
       color: var(--text);
       border: 1px solid var(--border);
-      padding: 8px 12px;
+      padding: 8px 14px;
       border-radius: 20px;
       font-size: 0.8rem;
       font-weight: 600;
@@ -120,17 +109,16 @@
       white-space: nowrap;
     }
 
-    .btn-action:hover {
-      border-color: var(--primary);
-      color: var(--primary);
+    .theme-btn:hover {
+      border-color: var(--text);
     }
 
-    /* Search & Filter Section */
+    /* Filter & Search Container */
     .filter-container {
       background: var(--card-bg);
       padding: 16px;
       border-radius: 14px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
       margin-bottom: 16px;
       border: 1px solid var(--border);
       display: flex;
@@ -154,8 +142,7 @@
     }
 
     .search-box input:focus {
-      border-color: var(--chakra);
-      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+      border-color: var(--text);
     }
 
     .search-icon {
@@ -218,11 +205,12 @@
     }
 
     .counter-badge {
-      background: var(--primary);
-      color: #ffffff;
+      background: var(--text);
+      color: var(--bg);
       padding: 2px 8px;
       border-radius: 12px;
       font-size: 0.75rem;
+      font-weight: 700;
     }
 
     /* Event Cards */
@@ -236,26 +224,12 @@
       background: var(--card-bg);
       border-radius: 14px;
       padding: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
       border: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .event-card::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 5px;
-      background: var(--primary);
     }
 
     .event-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.15);
-      border-color: var(--chakra);
+      border-color: var(--text);
     }
 
     .event-header {
@@ -271,20 +245,17 @@
     .event-title {
       font-size: 1.1rem;
       font-weight: 700;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      color: var(--text);
     }
 
     .event-date-badge {
       display: inline-block;
       background: var(--primary-light);
-      color: var(--primary);
+      color: var(--text);
       font-size: 0.8rem;
-      font-weight: 700;
+      font-weight: 600;
       padding: 4px 10px;
-      border-radius: 20px;
+      border-radius: 6px;
       border: 1px solid var(--border);
       white-space: nowrap;
     }
@@ -300,6 +271,9 @@
       .header-top {
         flex-direction: column;
         align-items: flex-start;
+      }
+      .naruto-img {
+        height: 65px;
       }
       .info-grid {
         grid-template-columns: 1fr;
@@ -336,12 +310,9 @@
     .loading-title {
       font-size: 0.72rem;
       font-weight: 700;
-      color: var(--primary);
+      color: var(--text-muted);
       margin-bottom: 6px;
       text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 4px;
     }
 
     .no-data, .loading-status {
@@ -350,36 +321,26 @@
       color: var(--text-muted);
       font-size: 0.9rem;
     }
-
-    /* Print Styling */
-    @media print {
-      body { background: #fff; color: #000; padding: 0; }
-      header, .filter-container, .header-actions { display: none; }
-      .event-card { border: 1px solid #ccc; break-inside: avoid; margin-bottom: 12px; }
-    }
   </style>
 </head>
 <body>
 
-  <!-- Header Bertema Naruto -->
+  <!-- Header dengan Karakter Naruto -->
   <header>
     <div class="header-top">
       <div class="mascot-title-box">
-        <!-- Gambar Naruto Avatar -->
-        <img class="naruto-avatar" src="https://upload.wikimedia.org/wikipedia/commons/c/c9/Naruto_logo.svg" alt="Naruto Icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3579/3579130.png'">
+        <!-- Gambar Karakter Naruto PNG -->
+        <img class="naruto-img" src="https://pngimg.com/d/naruto_PNG6.png" alt="Naruto Character" onerror="this.src='https://upload.wikimedia.org/wikipedia/en/9/9a/Naruto_Uzumaki.png'">
         <div>
-          <h1>🍃 Jadwal Loading Event GA</h1>
-          <p class="subtitle">Sistem Operasional & Logistik Tim Ninja</p>
+          <h1>Kalender & Jadwal Loading Event GA</h1>
+          <p class="subtitle">Sistem Informasi & Jadwal Operasional GA</p>
         </div>
       </div>
-      <div class="header-actions">
-        <button class="btn-action" onclick="window.print()">🖨️ Cetak</button>
-        <button id="themeToggle" class="btn-action" onclick="toggleTheme()">🌙 Dark</button>
-      </div>
+      <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">🌙 Mode Gelap</button>
     </div>
   </header>
 
-  <!-- Section Filter & Pencarian -->
+  <!-- Section Filter & Search -->
   <div class="filter-container">
     <!-- Search Bar -->
     <div class="search-box">
@@ -392,7 +353,7 @@
       <div class="filter-item">
         <label for="dateFilter">Tanggal Event</label>
         <select id="dateFilter" onchange="filterEvents()">
-          <option value="all">Semua Tanggal</option>
+          <option value="all">-- Semua Tanggal --</option>
         </select>
       </div>
 
@@ -400,7 +361,7 @@
       <div class="filter-item">
         <label for="monthFilter">Bulan</label>
         <select id="monthFilter" onchange="filterEvents()">
-          <option value="all">Semua Bulan</option>
+          <option value="all">-- Semua Bulan --</option>
           <option value="1">Januari</option>
           <option value="2">Februari</option>
           <option value="3">Maret</option>
@@ -420,7 +381,7 @@
       <div class="filter-item">
         <label for="yearFilter">Tahun</label>
         <select id="yearFilter" onchange="filterEvents()">
-          <option value="all">Semua Tahun</option>
+          <option value="all">-- Semua Tahun --</option>
           <option value="2025">2025</option>
           <option value="2026">2026</option>
           <option value="2027">2027</option>
@@ -430,22 +391,22 @@
     </div>
   </div>
 
-  <!-- Status Bar Counter -->
+  <!-- Counter Total Event -->
   <div class="status-bar">
     <div class="event-counter">
-      <span>📜 Total Misi/Event:</span>
+      <span>Total Event:</span>
       <span id="totalCounter" class="counter-badge">0</span>
     </div>
   </div>
 
-  <div id="statusMessage" class="loading-status">🌀 Mengumpulkan Chakra & Data dari Google Sheets...</div>
+  <div id="statusMessage" class="loading-status">Mengambil data terbaru dari Google Sheets...</div>
   <div class="event-list" id="eventList"></div>
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyb3UPksPpFon3SjcyIGJCOZTL7gxzxHsswVx7TTA41jc6vSBn7nnarDx2-i6NXIIrOpg/exec";
     let allEvents = [];
 
-    /* System Theme (Light / Dark) */
+    /* System Theme Toggle (Light / Dark) */
     function initTheme() {
       const savedTheme = localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
@@ -463,7 +424,7 @@
     function updateThemeButton(theme) {
       const btn = document.getElementById('themeToggle');
       if (btn) {
-        btn.innerHTML = theme === 'dark' ? '☀️ Light' : '🌙 Dark';
+        btn.innerHTML = theme === 'dark' ? '☀️ Mode Terang' : '🌙 Mode Gelap';
       }
     }
 
@@ -501,7 +462,7 @@
         populateDropdown(allEvents);
         renderCards(allEvents);
       } catch (error) {
-        statusEl.textContent = '❌ Gagal memuat data. Pastikan koneksi internet stabil.';
+        statusEl.textContent = 'Gagal memuat data. Pastikan jaringan stabil.';
       }
     }
 
@@ -524,7 +485,7 @@
       counterEl.textContent = events.length;
 
       if (events.length === 0) {
-        listEl.innerHTML = '<div class="no-data">🍃 Tidak ada jadwal event / misi yang cocok.</div>';
+        listEl.innerHTML = '<div class="no-data">Tidak ada jadwal event untuk filter yang dipilih.</div>';
         return;
       }
 
@@ -540,29 +501,29 @@
 
         card.innerHTML = `
           <div class="event-header">
-            <div class="event-title">📜 ${item.namaEvent || 'Event GA'}</div>
+            <div class="event-title">${item.namaEvent || 'Event GA'}</div>
             <span class="event-date-badge">📅 ${item.tanggalEvent || '-'}</span>
           </div>
           <div class="info-grid">
             <div class="info-item">
-              <span class="info-label">👤 PIC Misi</span>
+              <span class="info-label">PIC</span>
               <span class="info-value">${item.pic || '-'}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">📍 Lokasi</span>
+              <span class="info-label">Lokasi</span>
               <span class="info-value">${item.lokasi || '-'}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">⏰ Jam Event</span>
+              <span class="info-label">Jam Event</span>
               <span class="info-value">${item.jamEvent || '-'}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">🚚 Kendaraan</span>
+              <span class="info-label">Kendaraan</span>
               <span class="info-value">${item.kendaraan || '-'}</span>
             </div>
           </div>
           <div class="loading-box">
-            <div class="loading-title">⚡ Jadwal Loading Operasional</div>
+            <div class="loading-title">Jadwal Loading</div>
             <p><strong>Loading In:</strong> ${loadingInFormatted} ${loadingInTime}</p>
             <p><strong>Loading Out:</strong> ${loadingOutFormatted} ${loadingOutTime}</p>
           </div>
@@ -580,7 +541,6 @@
       const filtered = allEvents.filter(e => {
         let isMatch = true;
 
-        // 1. Filter Pencarian Teks
         if (searchText) {
           const nameMatch = (e.namaEvent || '').toLowerCase().includes(searchText);
           const picMatch = (e.pic || '').toLowerCase().includes(searchText);
@@ -590,12 +550,10 @@
           }
         }
 
-        // 2. Filter Tanggal Spesifik
         if (selectedDate !== 'all' && e.tanggalEvent !== selectedDate) {
           isMatch = false;
         }
 
-        // 3. Filter Bulan dan Tahun
         if (e.tanggalEvent && (selectedMonth !== 'all' || selectedYear !== 'all')) {
           const d = new Date(e.tanggalEvent);
           if (!isNaN(d.getTime())) {
@@ -617,7 +575,6 @@
       renderCards(filtered);
     }
 
-    /* Inisialisasi */
     initTheme();
     loadData();
   </script>
