@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +13,21 @@
       --text: #1e293b;
       --text-muted: #64748b;
       --border: #e2e8f0;
+      --loading-bg: #f1f5f9;
+      --input-bg: #ffffff;
+    }
+
+    /* Variabel Warna Mode Gelap (Black/Dark) */
+    [data-theme="dark"] {
+      --primary: #60a5fa;
+      --primary-light: #1e293b;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --loading-bg: #0f172a;
+      --input-bg: #1e293b;
     }
 
     * {
@@ -20,6 +35,7 @@
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
 
     body {
@@ -32,18 +48,47 @@
 
     header {
       margin-bottom: 20px;
-      text-align: center;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
     }
 
     h1 {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       color: var(--primary);
-      margin-bottom: 6px;
     }
 
     p.subtitle {
       font-size: 0.85rem;
       color: var(--text-muted);
+      text-align: left;
+    }
+
+    /* Tombol Tema (White / Black) */
+    .theme-btn {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+
+    .theme-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
     }
 
     .filter-container {
@@ -55,7 +100,6 @@
       border: 1px solid var(--border);
     }
 
-    /* Tambahan layout untuk grup filter */
     .filter-group {
       display: flex;
       flex-wrap: wrap;
@@ -81,7 +125,7 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       font-size: 0.95rem;
-      background-color: #fff;
+      background-color: var(--input-bg);
       color: var(--text);
       outline: none;
     }
@@ -104,13 +148,16 @@
       border-bottom: 1px solid var(--border);
       padding-bottom: 10px;
       margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
     }
 
     .event-title {
       font-size: 1.1rem;
       font-weight: 700;
       color: var(--primary);
-      margin-bottom: 4px;
     }
 
     .event-date-badge {
@@ -121,6 +168,7 @@
       font-weight: 600;
       padding: 4px 8px;
       border-radius: 6px;
+      white-space: nowrap;
     }
 
     .info-grid {
@@ -131,6 +179,10 @@
     }
 
     @media (max-width: 480px) {
+      .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
       .info-grid {
         grid-template-columns: 1fr;
       }
@@ -154,11 +206,12 @@
     }
 
     .loading-box {
-      background: #f1f5f9;
+      background: var(--loading-bg);
       padding: 10px;
       border-radius: 8px;
       margin-top: 12px;
       font-size: 0.85rem;
+      border: 1px solid var(--border);
     }
 
     .loading-title {
@@ -180,7 +233,10 @@
 <body>
 
   <header>
-    <h1>Kalender & Jadwal Loading Event GA</h1>
+    <div class="header-top">
+      <h1>Kalender & Jadwal Loading Event GA</h1>
+      <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">🌙 Mode Gelap</button>
+    </div>
     <p class="subtitle">Sistem Informasi & Jadwal Operasional</p>
   </header>
 
@@ -234,6 +290,32 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyb3UPksPpFon3SjcyIGJCOZTL7gxzxHsswVx7TTA41jc6vSBn7nnarDx2-i6NXIIrOpg/exec";
     let allEvents = [];
+
+    /* Inisialisasi Tema (Hitam / Putih) */
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeButton(savedTheme);
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeButton(newTheme);
+    }
+
+    function updateThemeButton(theme) {
+      const btn = document.getElementById('themeToggle');
+      if (btn) {
+        if (theme === 'dark') {
+          btn.innerHTML = '☀️ Mode Terang';
+        } else {
+          btn.innerHTML = '🌙 Mode Gelap';
+        }
+      }
+    }
 
     function formatDate(val) {
       if (!val || val === '-') return '-';
@@ -345,16 +427,14 @@
       const filtered = allEvents.filter(e => {
         let isMatch = true;
 
-        // 1. Cek Filter Tanggal Spesifik
         if (selectedDate !== 'all' && e.tanggalEvent !== selectedDate) {
           isMatch = false;
         }
 
-        // 2. Cek Filter Bulan dan Tahun
         if (e.tanggalEvent && (selectedMonth !== 'all' || selectedYear !== 'all')) {
           const d = new Date(e.tanggalEvent);
           if (!isNaN(d.getTime())) {
-            const evMonth = (d.getMonth() + 1).toString(); // getMonth mulai dari 0
+            const evMonth = (d.getMonth() + 1).toString();
             const evYear = d.getFullYear().toString();
 
             if (selectedMonth !== 'all' && evMonth !== selectedMonth) {
@@ -372,6 +452,8 @@
       renderCards(filtered);
     }
 
+    /* Jalankan Pengaturan Tema & Muat Data */
+    initTheme();
     loadData();
   </script>
 
